@@ -1,0 +1,35 @@
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  background-color: #202024; /* Cor de fundo mais escura */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 24px; /* Aumentar o padding */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 600px; /* Largura máxima */
+  width: 90%; /* Ocupar 90% da tela em dispositivos menores */
+  max-height: 80%;
+  overflow: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.header button {
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  font-size: 1.5em; /* Aumentar o tamanho da fonte do botão */
+  cursor: pointer;
+  transition: color 0.2s; /* Adicionar uma transição suave na cor */
+}
+
+.header button:hover {
+  color: #c4c4c4; /* Cor mais clara ao passar o mouse */
+}
