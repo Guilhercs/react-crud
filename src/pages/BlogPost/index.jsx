@@ -32,7 +32,7 @@ export const BlogPost = () => {
           return navigate("/not-found");
         }
       });
-  }, [slug, navigate, comments]);
+  }, [slug, navigate]);
 
   if (!post) {
     return null;
@@ -60,7 +60,7 @@ export const BlogPost = () => {
               <p>{post.likes}</p>
             </div>
             <div className={styles.action}>
-              <ModalComment onSuccess={handleNewComment} postId={post.id} />
+              <ModalComment onSuccess={handleNewComment} postId={post?.id} />
               <p>{comments.length}</p>
             </div>
           </div>

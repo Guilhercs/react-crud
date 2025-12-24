@@ -19,20 +19,10 @@ export const CardPost = ({ post }) => {
 
   function onThumbsIsClicked() {
     if (clickCount < 1) {
-      http
-        .post(
-          `/blog-posts/${post.id}/like`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${JSON.parse(token)}`,
-            },
-          }
-        )
-        .then(() => {
-          setClickCount((prev) => prev + 1);
-          setLikes((prev) => prev + 1);
-        });
+      http.post(`/blog-posts/${post.id}/like`).then(() => {
+        setClickCount((prev) => prev + 1);
+        setLikes((prev) => prev + 1);
+      });
     }
   }
 

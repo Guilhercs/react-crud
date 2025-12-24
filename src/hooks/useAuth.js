@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { http } from "../api";
 
 export const useAuth = () => {
-  const BASE_URL = "http://localhost:3000";
-
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -22,7 +20,7 @@ export const useAuth = () => {
 
   const register = async (name, email, password) => {
     try {
-      await http.post(`${BASE_URL}/auth/register`, {
+      await http.post(`/auth/register`, {
         email: email,
         password: password,
         name: name,
@@ -50,6 +48,7 @@ export const useAuth = () => {
       const data = await response.data;
 
       setUser(data.user);
+      console.log(data.user);
       localStorage.setItem("auth_user", JSON.stringify(data.user));
       localStorage.setItem("access_token", JSON.stringify(data.access_token));
 

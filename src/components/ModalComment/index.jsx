@@ -10,7 +10,13 @@ import styles from "./commentmodal.module.css";
 import { Button } from "../Button";
 import { http } from "../../api";
 
-export const ModalComment = ({ isEditing, onSuccess, postId }) => {
+export const ModalComment = ({
+  isEditing,
+  onSuccess,
+  postId,
+  comment = "",
+  commentId,
+}) => {
   const modalRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("access_token");
@@ -23,19 +29,27 @@ export const ModalComment = ({ isEditing, onSuccess, postId }) => {
     try {
       setLoading(true);
 
-      http
-        .post(
-          `/comments/post/${postId}`,
-          {
+      if (isEditing) {
+        http
+          .patch(`/comments/${commentId}`, {
             text: text,
-          },
-          { headers: { Authorization: `Bearer ${JSON.parse(token)}` } }
-        )
-        .then((res) => {
-          modalRef.current.closeModal();
-          onSuccess(res.data);
-          setLoading(false);
-        });
+          })
+          .then((res) => {
+            modalRef.current.closeModal();
+            onSuccess(res.data);
+            setLoading(false);
+          });
+      } else {
+        http
+          .post(`/comments/post/${postId}`, {
+            text: text,
+          })
+          .then((res) => {
+            modalRef.current.closeModal();
+            onSuccess(res.data);
+            setLoading(false);
+          });
+      }
     } catch (error) {
       console.error("Erro ao criar/atualizar comentário:", error);
     }
@@ -54,6 +68,7 @@ export const ModalComment = ({ isEditing, onSuccess, postId }) => {
             rows={8}
             name="text"
             placeholder="Digite aqui..."
+            defaultValue={comment}
           />
           <div className={styles.footer}>
             <Button disabled={loading} type="submit">
