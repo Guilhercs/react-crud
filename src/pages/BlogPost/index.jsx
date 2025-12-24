@@ -7,22 +7,32 @@ import ReactMarkdown from "react-markdown";
 import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { ModalComment } from "../../components/ModalComment";
+import { http } from "../../api";
 
 export const BlogPost = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+
   const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
+
+  const handleNewComment = (comment) => {
+    setComments((prevComments) => [comment, ...prevComments]);
+  };
 
   useEffect(() => {
-    fetch(`http://localhost:3000/blog-posts/slug/${slug}`)
+    http
+      .get(`/blog-posts/slug/${slug}`)
       .then((res) => {
+        setPost(res.data);
+        setComments(res.data.comments);
+      })
+      .catch((res) => {
         if (res.status == 404) {
           return navigate("/not-found");
         }
-        return res.json();
-      })
-      .then((data) => setPost(data));
-  }, [slug, navigate]);
+      });
+  }, [slug, navigate, comments]);
 
   if (!post) {
     return null;
@@ -50,8 +60,8 @@ export const BlogPost = () => {
               <p>{post.likes}</p>
             </div>
             <div className={styles.action}>
-              <ModalComment />
-              <p>{post.comments.length}</p>
+              <ModalComment onSuccess={handleNewComment} postId={post.id} />
+              <p>{comments.length}</p>
             </div>
           </div>
           <Author author={post.author} />
@@ -61,7 +71,7 @@ export const BlogPost = () => {
       <div className={styles.code}>
         <ReactMarkdown>{post.markdown}</ReactMarkdown>
       </div>
-      <CommentList comments={post.comments} />
+      <CommentList comments={comments} />
     </main>
   );
 };

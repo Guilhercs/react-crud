@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { http } from "../api";
 
 export const useAuth = () => {
   const BASE_URL = "http://localhost:3000";
@@ -21,23 +22,13 @@ export const useAuth = () => {
 
   const register = async (name, email, password) => {
     try {
-      const response = await fetch(`${BASE_URL}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          name: name,
-        }),
+      await http.post(`${BASE_URL}/auth/register`, {
+        email: email,
+        password: password,
+        name: name,
       });
 
-      if (response.status == 400) {
-        throw new Error("HTTP Error: ", response);
-      }
-
-      return { success: true, response };
+      return { success: true };
     } catch (error) {
       return { success: false, error: error.message };
     }
@@ -45,21 +36,18 @@ export const useAuth = () => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch(`${BASE_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await http
+        .post(`/auth/login`, {
           email: email,
           password: password,
-        }),
-      });
-      if (response.status == 400) {
-        throw new Error("HTTP Error: ", response);
+        })
+        .catch((res) => res);
+      console.log(response);
+      if (response.status !== 200) {
+        return { success: false, response };
       }
 
-      const data = await response.json();
+      const data = await response.data;
 
       setUser(data.user);
       localStorage.setItem("auth_user", JSON.stringify(data.user));

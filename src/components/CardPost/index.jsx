@@ -4,26 +4,35 @@ import { ModalComment } from "../ModalComment";
 import { ThumbsUpButton } from "./ThumbsUpButton";
 import { Link } from "react-router";
 import { useState } from "react";
+import { http } from "../../api";
 
 export const CardPost = ({ post }) => {
   const [likes, setLikes] = useState(post.likes);
   const [clickCount, setClickCount] = useState(0);
+  const [comment, setComments] = useState(post.comments);
 
   const token = localStorage.getItem("access_token");
 
+  function handleNewComment(comments) {
+    setComments((prev) => [...prev, comments]);
+  }
+
   function onThumbsIsClicked() {
     if (clickCount < 1) {
-      fetch(`http://localhost:3000/blog-posts/${post.id}/like`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${JSON.parse(token)}`,
-        },
-      }).then((res) => {
-        if (res.ok) {
+      http
+        .post(
+          `/blog-posts/${post.id}/like`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(token)}`,
+            },
+          }
+        )
+        .then(() => {
           setClickCount((prev) => prev + 1);
           setLikes((prev) => prev + 1);
-        }
-      });
+        });
     }
   }
 
@@ -46,8 +55,8 @@ export const CardPost = ({ post }) => {
             <p>{likes}</p>
           </div>
           <div className={styles.action}>
-            <ModalComment />
-            <p>{post.comments.length}</p>
+            <ModalComment onSuccess={handleNewComment} postId={post.id} />
+            <p>{comment.length}</p>
           </div>
         </div>
         <Author author={post.author} />
