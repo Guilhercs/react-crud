@@ -16,7 +16,7 @@ const onSuccess = (config) => {
 };
 
 const onError = (err) => {
-  return err;
+  return Promise.reject(err);
 };
 
 http.interceptors.request.use(onSuccess, onError);

@@ -19,7 +19,6 @@ export const ModalComment = ({
 }) => {
   const modalRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const token = localStorage.getItem("access_token");
 
   const onSubmit = async (formData) => {
     const text = formData.get("text");
